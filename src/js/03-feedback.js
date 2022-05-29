@@ -8,32 +8,50 @@ const formData = {};
 
 function onFormClick(evt) {
     formData[evt.target.name] = evt.target.value;
-    const formDataJSOM = JSON.stringify(formData);
-    localStorage.setItem("feedback-form-state", formDataJSOM)
+    const formDataJSON = JSON.stringify(formData);
+    localStorage.setItem("feedback-form-state",formDataJSON)
 };
 
 function populateForm() {
     const savedMessage = localStorage.getItem('feedback-form-state');
     const formValues = JSON.parse(savedMessage);
-    if (savedMessage) {
-        formInput.value = formValues.email; 
-        formTextarea.value = formValues.message;  
-    }
-}
+    if (formValues) {
+        if (typeof formValues['email'] !== "undefined") {
+        formInput.value = formValues.email;
+        }else{
+        formInput.value = "";
+        };
 
-form.addEventListener('input', onFormClick);
-form.addEventListener('input', populateForm)
+        if (typeof formValues['message'] !== "undefined") {
+        formTextarea.value = formValues.message;
+        }else{
+        formTextarea.value = "";
+        };
+    };
+};
 
-// function onFormInputClick(evt) {
-//     const email = evt.target.value;
-//     console.log(email);
-// };
+function onFormSubmit(evt) {
+    evt.preventDefault();
+    const savedMessage = localStorage.getItem('feedback-form-state');
+    const formValues = JSON.parse(savedMessage);
+    
+    if (typeof formValues['email'] !== "undefined" && typeof formValues['message'] !== "undefined") {
+        console.log(formValues);
 
-// function onTextareaInput(evt) {
-//     const message = evt.target.value;
-//     console.log(message);
-// };
+        // Очищаем объект formValues
+        for(var key in formData){
+        delete formData[key];
+        };
+        localStorage.removeItem("feedback-form-state");
+        evt.currentTarget.reset();
+    } else {
+        alert('Все поля должны быть заполнены!');
+    };
+};
 
-// formInput.addEventListener('input', onFormInputClick);
-// formTextarea.addEventListener('input', onTextareaInput)
+
+form.addEventListener('input', trottle(onFormClick, 500));
+form.addEventListener('submit', onFormSubmit);
+populateForm();
+
  
