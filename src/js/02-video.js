@@ -16,4 +16,5 @@ const setCurrentTime = function () {
 };
 
 player.on('timeupdate', trottle(getCurrentTime, 1000));
-player.on('play', setCurrentTime);
+player.on('loaded', setCurrentTime);
+
