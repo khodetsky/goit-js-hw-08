@@ -5,50 +5,42 @@ const formInput = document.querySelector(".feedback-form input");
 const formTextarea = document.querySelector(".feedback-form textarea");
 
 const formData = {};
+const LOCAL_STORAGE_KEY = "feedback-form-state";
 
 function onFormClick(evt) {
     formData[evt.target.name] = evt.target.value;
-    const formDataJSON = JSON.stringify(formData);
-    localStorage.setItem("feedback-form-state",formDataJSON)
+    const formDataStringify = JSON.stringify(formData);
+    localStorage.setItem(LOCAL_STORAGE_KEY, formDataStringify);
 };
 
 function populateForm() {
-    const savedMessage = localStorage.getItem('feedback-form-state');
+    const savedMessage = localStorage.getItem(LOCAL_STORAGE_KEY);
     const formValues = JSON.parse(savedMessage);
+
     if (formValues) {
         if (typeof formValues['email'] !== "undefined") {
-        formInput.value = formValues.email;
-        }else{
-        formInput.value = "";
+            formInput.value = formValues.email;
         };
-
         if (typeof formValues['message'] !== "undefined") {
-        formTextarea.value = formValues.message;
-        }else{
-        formTextarea.value = "";
+            formTextarea.value = formValues.message;
         };
     };
 };
 
 function onFormSubmit(evt) {
     evt.preventDefault();
-    const savedMessage = localStorage.getItem('feedback-form-state');
-    const formValues = JSON.parse(savedMessage);
-    
-    if (typeof formValues['email'] !== "undefined" && typeof formValues['message'] !== "undefined") {
-        console.log(formValues);
 
-        // Очищаем объект formValues
-        for(var key in formData){
-        delete formData[key];
-        };
-        localStorage.removeItem("feedback-form-state");
+    if ( formInput.value !== "" &&  formTextarea.value !== "") {
+        const  obj = {};
+        obj[formInput.name] = formInput.value;
+        obj[formTextarea.name] = formTextarea.value;
+        console.log(obj);
+        localStorage.removeItem(LOCAL_STORAGE_KEY);
         evt.currentTarget.reset();
     } else {
-        alert('Все поля должны быть заполнены!');
+        alert('Все поля должны быть заполнены!');  
     };
 };
-
 
 form.addEventListener('input', trottle(onFormClick, 500));
 form.addEventListener('submit', onFormSubmit);
