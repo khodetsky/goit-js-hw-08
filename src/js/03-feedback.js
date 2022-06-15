@@ -4,8 +4,19 @@ const form = document.querySelector(".feedback-form")
 const formInput = document.querySelector(".feedback-form input");
 const formTextarea = document.querySelector(".feedback-form textarea");
 
-const formData = {};
+let formData = {};
 const LOCAL_STORAGE_KEY = "feedback-form-state";
+
+ifLocalStorageNotEmpty();
+
+
+function ifLocalStorageNotEmpty() {
+    if (localStorage.getItem(LOCAL_STORAGE_KEY)) {
+        const savedMessage = localStorage.getItem(LOCAL_STORAGE_KEY);
+        const formValues = JSON.parse(savedMessage);
+        formData = formValues;
+    }
+};
 
 function onFormClick(evt) {
     formData[evt.target.name] = evt.target.value;
