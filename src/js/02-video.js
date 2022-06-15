@@ -12,7 +12,9 @@ const getCurrentTime = function () {
 };
 const setCurrentTime = function () {
     const currentTime = localStorage.getItem("videoplayer-current-time");
-    player.setCurrentTime(currentTime);
+    if (currentTime) {
+        player.setCurrentTime(currentTime);
+    }
 };
 
 player.on('timeupdate', trottle(getCurrentTime, 1000));
